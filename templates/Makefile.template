@@ -1,0 +1,17 @@
+install:
+    python ./setup.py install
+
+make:
+    python ./{name}/data/make_dataset.py
+    
+build:
+    python ./{name}/features/build_features.py
+    
+train:
+    python ./{name}/models/train_model.py
+    
+predict:
+    python ./{name}/models/predict_model.py
+    
+visualize:
+    python ./{name}/eval/visualize.py

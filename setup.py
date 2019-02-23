@@ -1,2 +1,27 @@
-import project_maker
-import setup_tools.setup
+import os
+import project_generator
+from setuptools import setup, find_packages
+
+def read(filename):
+    filename = os.path.join(os.path.dirname(__file__), filename)
+    with open(filename, 'r') as f:
+        return f.read()
+
+setup(
+    name = '{name}',
+    version = {name}.__version__,
+    author = '{author}',
+    author_email = '{email}',
+    description = '{description}',
+    license = '{license}',
+    keywords = '{keywords}',
+    url = '{url}',
+    packages = find_packages(),
+    long_description = read('README.md'),
+    classifiers = [
+        'Programming Language :: Python :: 3',
+        'Operational System :: Independent',
+        'Topic :: Data Science Project',
+        'License :: OSI Approved :: BSD License',
+    ],
+)

@@ -1,0 +1,7 @@
+# -*- coding: utf-8 -*-
+
+def main():
+	print('Making dataset...')
+
+if __main__(*args, **kwargs):
+	main()
