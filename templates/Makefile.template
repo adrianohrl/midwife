@@ -1,17 +1,29 @@
+clean:
+	find ./ -name "*~" -exec rm -f {} \;
+	find ./ -name "__pycache__" -exec rm -rf {} \; -prune
+	find ./ -name ".ipynb_checkpoints" -exec rm -rf {} \; -prune
+	rm -rf build/
+	rm -rf dist/
+	rm -rf *.egg-info
+
 install:
-    python ./setup.py install
+	pip install . --user
+	python ./setup.py install --user
+    
+uninstall:
+	pip uninstall {name}
 
 make:
-    python ./{name}/data/make_dataset.py
+	python ./{name}/data/make_dataset.py
     
 build:
-    python ./{name}/features/build_features.py
+	python ./{name}/features/build_features.py
     
 train:
-    python ./{name}/models/train_model.py
+	python ./{name}/models/train_model.py
     
 predict:
-    python ./{name}/models/predict_model.py
+	python ./{name}/models/predict_model.py
     
 visualize:
-    python ./{name}/eval/visualize.py
+	python ./{name}/eval/visualize.py

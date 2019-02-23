@@ -5,6 +5,14 @@ import json
 import shutil
 import subprocess
 
+class ProjectGenerationException(Exception):
+    
+    def __init__(self, value):
+        self.value = value
+    
+    def __str__(self):
+        return repr(self.value)
+
 class Project(object):
     
     params_filename = os.path.abspath(os.path.join(
@@ -15,7 +23,7 @@ class Project(object):
     ))
     
     def __init__(self, **info):
-        self.path = os.path.abspath(info['path'])
+        self.path = os.path.abspath(info['path'])c d..
         self.name = info['name']
         self.authors = info['authors']
         self._load()
@@ -25,7 +33,7 @@ class Project(object):
             'email': ', '.join([author['email'] for author in info['authors']]),
             'description': info['description'],
             'license': info['license'],
-            'keywords': info['keywords'],
+            'keywords': ','.join(info['keywords']) if len(info['keywords']) > 1 else info['keywords'],
             'url': '/'.join([
                 self.params['gitlab']['url'], 
                 self.params['gitlab']['namespace'],
@@ -45,6 +53,9 @@ class Project(object):
         print('Created the {} project structure at {}, successfully!'.format(self.name, self.path))
   
     def _makedirs(self):
+        root = os.path.join(self.path, self.name)
+        if os.path.exists(root):
+            raise ProjectGenerationException('Unable to generate the {} project. The {} directory already exists.'.format(self.name, root))
         for directory in self.params['directories']:
             os.makedirs(directory)
             print('Created the {} directory.'.format(directory))
@@ -89,7 +100,7 @@ class Project(object):
     def _create_makefile(self):
         with open(self.params['templates']['makefile'], 'r') as fr:
             with open(self.params['files']['makefile'], 'w') as fw:
-                fw.write(fr.read().format(name = self.name))
+                fw.write(fr.read().replace('{name}', self.name))
                 print('Created the {} file.'.format(self.params['files']['makefile']))
               
     def _create_others(self):

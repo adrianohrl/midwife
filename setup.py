@@ -8,14 +8,14 @@ def read(filename):
         return f.read()
 
 setup(
-    name = '{name}',
-    version = {name}.__version__,
-    author = '{author}',
-    author_email = '{email}',
-    description = '{description}',
-    license = '{license}',
-    keywords = '{keywords}',
-    url = '{url}',
+    name = 'project_generator',
+    version = project_generator.__version__,
+    author = 'Adriano Henrique Rossette Leite',
+    author_email = 'contact@adrianohrl.tech',
+    description = 'This is a tool for automaticly generating a data science project based on its metadata.',
+    license = 'BSD',
+    keywords = 'Automated, Data Science, Project, Generation',
+    url = 'https://gitlab.com/adrianohrl/project_generator',
     packages = find_packages(),
     long_description = read('README.md'),
     classifiers = [

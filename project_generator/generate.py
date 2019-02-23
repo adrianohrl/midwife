@@ -1,13 +1,57 @@
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .project_generator import Project
+#from argparse import ArgumentParser
+import os
+import shutil
+from project_generator import Project
 
-def ask():
-    answers = {}
-    answers['path'] = input('')
+#parser = argparse.ArgumentParser()
+#parser.parse_args()
 
-def main(*kwargs, **args):
-    print('Welcome to the project_generator tool!!!\n\nYou will be asked some question in order to automaticly create it for you.\n\nSo let\'s get started...\n\n)
+def main():
+    print('''
+        Welcome to the project_generator tool!!!
+        \n\n
+        You will be asked some question in order to automaticly create it for you.\n\n
+        So let\'s get started...
+        \n\n
+    ''')
+    info = {
+        'path': '../..',
+        'name': 'example',
+        'authors': [{
+                'name': 'Adriano Henrique Rossette Leite',
+                'email': 'contact@adrianohrl.tech',
+                'racf': 'adrianohrl',
+            }, {
+                'name': 'Henrique Rossette Leite',
+                'email': 'me@adrianohrl.tech',
+                'racf': 'henriquerl',
+            },
+        ],
+        'description': 'This is an example.',
+        'license': 'BSD',
+        'keywords': [
+            'project',
+            'generator',
+            'example',
+        ],
+    }
+    root = os.path.abspath(os.path.join(info['path'], info['name']))
+    if os.path.exists(root):
+        shutil.rmtree(root)
+        print('Removed the {} directory.'.format(root))
+    project = Project(**info)
+    project.generate()
+    
+    #######################################ss#####
+    ###         requirements.txt             ###
+    ###                                      ###
+    ### fazer as perguntas de requirimentos  ###
+    ### e escrevê-las no arquivo apropriado  ###
+    ###                                      ###
+    ############################################
 
-if __main__(*kwargs, **args):
-    main(*kwargs, **args)
+if __name__ == "__main__":
+    main()
