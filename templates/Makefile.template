@@ -5,10 +5,13 @@ clean:
 	rm -rf build/
 	rm -rf dist/
 	rm -rf *.egg-info
+    
+build:
+	python ./setup.py build
 
 install:
 	pip install . --user
-	python ./setup.py install --user
+	#python ./setup.py install --user
     
 uninstall:
 	pip uninstall {name}

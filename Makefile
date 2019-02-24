@@ -8,7 +8,10 @@ clean:
 	#rm -rf docs/build
 
 install:
-	python ./setup.py install
+	pip install . --user
+    
+uninstall:
+	pip uninstall project_generator
   
 generate:
 	python ./project_generator/generate.py

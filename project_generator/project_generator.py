@@ -26,6 +26,7 @@ class Project(object):
         self.path = os.path.abspath(info['path'])c d..
         self.name = info['name']
         self.authors = info['authors']
+        self.requirements = info['requirements']
         self._load()
         self.metadata = {
             'name': info['name'],
@@ -72,11 +73,12 @@ class Project(object):
 
     def _create_requirements(self):
         with open(self.params['files']['requirements'], 'w') as f:
-            f.write('')
+            for requirement in self.requirements:
+                f.write(requirement + '\n')
             print('Created the {} file.'.format(self.params['files']['requirements']))
     
     def _create_readme(self):
-        authors = ['[{name}](mailto:{email})(@{racf})'.format(**author) for author in self.authors]
+        authors = ['[{name}](mailto:{email})(@{username})'.format(**author) for author in self.authors]
         if len(authors) > 1:
             authors = ' e '.join([', '.join(authors[:-1]), authors[-1]])
         with open(self.params['templates']['readme'], 'r') as fr:

@@ -1,0 +1,10 @@
+- register logs
+- git init and first commit "generated the {name} project with the project_generator tool"
+- gitlab create repo
+- ssh key generation
+- sphinxs docs
+- enable usage as a bin application to be used in any directory in the terminal
+- configure argparser
+- enable custom structure in the interactive form
+- print the tree schema of the project before confirmation (usando o os.walk(root))
+- print the purpose of each folder in the project (README.md)

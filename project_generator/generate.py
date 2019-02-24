@@ -18,16 +18,16 @@ def main():
         \n\n
     ''')
     info = {
-        'path': '../..',
+        'path': '~',
         'name': 'example',
         'authors': [{
                 'name': 'Adriano Henrique Rossette Leite',
                 'email': 'contact@adrianohrl.tech',
-                'racf': 'adrianohrl',
+                'username': 'adrianohrl',
             }, {
                 'name': 'Henrique Rossette Leite',
                 'email': 'me@adrianohrl.tech',
-                'racf': 'henriquerl',
+                'username': 'henriquerl',
             },
         ],
         'description': 'This is an example.',
@@ -37,6 +37,10 @@ def main():
             'generator',
             'example',
         ],
+        'requirements': [
+            'pandas >= 0.23.4',
+            'numpy >= 1.16.1 ',
+        ],
     }
     root = os.path.abspath(os.path.join(info['path'], info['name']))
     if os.path.exists(root):
@@ -45,7 +49,7 @@ def main():
     project = Project(**info)
     project.generate()
     
-    #######################################ss#####
+    ############################################
     ###         requirements.txt             ###
     ###                                      ###
     ### fazer as perguntas de requirimentos  ###
