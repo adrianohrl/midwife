@@ -23,7 +23,7 @@ class Project(object):
     ))
     
     def __init__(self, **info):
-        self.path = os.path.abspath(info['path'])c d..
+        self.path = os.path.abspath(info['path'])
         self.name = info['name']
         self.authors = info['authors']
         self.requirements = info['requirements']

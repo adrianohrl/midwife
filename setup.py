@@ -24,4 +24,8 @@ setup(
         'Topic :: Data Science Project',
         'License :: OSI Approved :: BSD License',
     ],
+    #data_files = [
+    #    ('templates', ['./templates/b1.gif', 'bm/b2.gif']), # automatizar
+    #    ('config', ['cfg/data.cfg']), # automatizar
+    #],
 )
