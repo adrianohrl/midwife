@@ -5,7 +5,8 @@
 __Diretoria__: <_DIRETORIA_>
 __Superintendência__: <_SUPERINTENDÊNCIA_>
 __Gerência__: <_GERÊNCIA_>
-__Autor(es)__: {authors}.
+__Autor(es)__: {authors}
+__Palavras-Chaves__: {keywords}
 
 {description}
 
@@ -44,3 +45,5 @@ __Autor(es)__: {authors}.
 <_DAR DETALHES SOBRE SUPORTE [WIKI]({url}/wikis)._>
 
 <_LISTAR LINKS PERTINENTES PARA O PROJETO (MANUAL DO CIENTISTA DE DADOS)_>
+
+Criado por (midwife)[https://github.com/adrianohrl/midwife].

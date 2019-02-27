@@ -8,16 +8,16 @@ clean:
 	#rm -rf docs/build
 
 install:
-	pip install . --user
+	pip install .
     
 uninstall:
-	pip uninstall project_generator
+	pip uninstall midwife
   
 generate:
-	python ./project_generator/generate.py
+	python ./midwife/generate.py
 
 ssh:
-	python ./project_generator/ssh/create.py
+	python ./midwife/ssh/create.py
 
 git:
-	python ./project_generator/git/init.py
+	python ./midwife/git/init.py

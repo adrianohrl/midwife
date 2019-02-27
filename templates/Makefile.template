@@ -10,8 +10,7 @@ build:
 	python ./setup.py build
 
 install:
-	pip install . --user
-	#python ./setup.py install --user
+	pip install .
     
 uninstall:
 	pip uninstall {name}

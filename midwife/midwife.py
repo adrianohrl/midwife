@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
 import json
 import shutil
 import subprocess
 
-class ProjectGenerationException(Exception):
+class MidwifeException(Exception):
     
     def __init__(self, value):
         self.value = value
@@ -15,12 +16,7 @@ class ProjectGenerationException(Exception):
 
 class Project(object):
     
-    params_filename = os.path.abspath(os.path.join(
-        os.path.dirname(__file__), 
-        os.pardir,
-        'templates',
-        'params.json',
-    ))
+    params_filename = os.path.join(sys.prefix, 'templates', 'params.json')
     
     def __init__(self, **info):
         self.path = os.path.abspath(info['path'])
@@ -34,7 +30,7 @@ class Project(object):
             'email': ', '.join([author['email'] for author in info['authors']]),
             'description': info['description'],
             'license': info['license'],
-            'keywords': ','.join(info['keywords']) if len(info['keywords']) > 1 else info['keywords'],
+            'keywords': ','.join(info['keywords']),
             'url': '/'.join([
                 self.params['gitlab']['url'], 
                 self.params['gitlab']['namespace'],
@@ -56,7 +52,7 @@ class Project(object):
     def _makedirs(self):
         root = os.path.join(self.path, self.name)
         if os.path.exists(root):
-            raise ProjectGenerationException('Unable to generate the {} project. The {} directory already exists.'.format(self.name, root))
+            raise MidwifeException('Unable to generate the {} project. The {} directory already exists.'.format(self.name, root))
         for directory in self.params['directories']:
             os.makedirs(directory)
             print('Created the {} directory.'.format(directory))
@@ -79,8 +75,7 @@ class Project(object):
     
     def _create_readme(self):
         authors = ['[{name}](mailto:{email})(@{username})'.format(**author) for author in self.authors]
-        if len(authors) > 1:
-            authors = ' e '.join([', '.join(authors[:-1]), authors[-1]])
+        authors = ' e '.join([', '.join(authors[:-1]), authors[-1]]) if len(authors) > 1 else authors[0]
         with open(self.params['templates']['readme'], 'r') as fr:
             with open(self.params['files']['readme'], 'w') as fw:
                 fw.write(fr.read().format(
@@ -88,6 +83,7 @@ class Project(object):
                     description = self.metadata['description'],
                     authors = authors,
                     url = self.metadata['url'],
+                    keywords = self.metadata['keywords'],
                 ))
                 print('Created the {} file.'.format(self.params['files']['readme']))
             
@@ -114,7 +110,7 @@ class Project(object):
         replaces = {
             '{name}': self.name,
             '{root}': os.path.join(self.path, self.name),
-            '{path}': os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)),
+            '{path}': os.path.join(sys.prefix),
         }
         with open(Project.params_filename, 'r') as f:    
             self.params = f.read()

@@ -3,8 +3,11 @@
 
 #from argparse import ArgumentParser
 import os
+import sys
 import shutil
-from project_generator import Project
+import json
+import midwife
+from midwife import Project
 
 #parser = argparse.ArgumentParser()
 #parser.parse_args()
@@ -12,11 +15,11 @@ from project_generator import Project
 def ask(label, default, escape = False):
     if label == '':
         return None
-    label += '?'
     if default is not None:
-        label = '{} ({})'.format(label, 'default: \'{}\''.format(default))
+        label = '\n{} ({})?\n  '.format(label, 'default: \'{}\''.format(default))
         answer = input(label)
         return answer if answer != '' else default
+    label = '\n{}?\n  '.format(label)
     answer = input(label)
     if answer == '' and escape:
         return None
@@ -52,21 +55,21 @@ class Field(object):
                 answers.append({})
                 for field in self.fields:
                     key, answer = field.ask(i + 1) # how about when it can be empty (default)?
-                    print('final answer: \'{}\''.format(answer))
                     if answer is None:
                         answers.pop()
                         return self.key, answers
                     answers[i][key] = answer            
 
 def main():
+    print('\t{}\n\tv{}\nby {}\n\t{}\n'.format(
+        'midwife', 
+        midwife.__version__, 
+        'Adriano Henrique Rossette Leite', 
+        'A tool for automaticly generating data science projects for python.'
+    ))
     language = 'en' # pode ser um parametro de execucao 
     #path = '~' # pode ser um parametro de execucao
-    form_filename = os.path.abspath(os.path.join(
-        os.path.dirname(__file__), 
-        os.pardir,
-        'templates',
-        'form.{}.json'.format(language),
-    ))    
+    form_filename = os.path.join(sys.prefix, 'templates', 'form.{}.json'.format(language))
     with open(form_filename, 'r') as f:    
         form = json.loads(f.read())
         info = {}
@@ -80,7 +83,7 @@ def main():
 
 def test():
     print('''
-        Welcome to the project_generator tool!!!
+        Welcome to the midwife tool!!!
         \n\n
         You will be asked some question in order to automaticly create it for you.\n\n
         So let\'s get started...
@@ -127,4 +130,4 @@ def test():
     ############################################
 
 if __name__ == "__main__":
-    main()
+    test()
