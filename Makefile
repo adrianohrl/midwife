@@ -1,10 +1,12 @@
 clean:
 	find ./ -name "*~" -exec rm -f {} \;
+	find ./ -name "*.swp" -exec rm -f {} \;
 	find ./ -name "__pycache__" -exec rm -rf {} \; -prune
 	find ./ -name ".ipynb_checkpoints" -exec rm -rf {} \; -prune
 	rm -rf build/
 	rm -rf dist/
 	rm -rf *.egg-info
+	rm -rf ~/.midwife
 	#rm -rf docs/build
 
 install:

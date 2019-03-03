@@ -3,11 +3,10 @@
 
 #from argparse import ArgumentParser
 import os
-import sys
 import shutil
 import json
 import midwife
-from midwife import Project
+import pkg_resources
 
 #parser = argparse.ArgumentParser()
 #parser.parse_args()
@@ -61,15 +60,17 @@ class Field(object):
                     answers[i][key] = answer            
 
 def main():
-    print('\t{}\n\tv{}\nby {}\n\t{}\n'.format(
+    print('\t{}\n\tv{}\n\tby {}\n\t{}\n'.format(
         'midwife', 
-        midwife.__version__, 
+        midwife.__version__,
         'Adriano Henrique Rossette Leite', 
         'A tool for automaticly generating data science projects for python.'
     ))
     language = 'en' # pode ser um parametro de execucao 
     #path = '~' # pode ser um parametro de execucao
-    form_filename = os.path.join(sys.prefix, 'templates', 'form.{}.json'.format(language))
+    #prefix = os.path.join(os.path.expanduser('~'), '.midware')
+    prefix = pkg_resources.resource_filename('midwife', 'templates')
+    form_filename = os.path.join(prefix, 'form.{}.json'.format(language))
     with open(form_filename, 'r') as f:    
         form = json.loads(f.read())
         info = {}
@@ -79,15 +80,31 @@ def main():
             key, answer = field.ask()
             info[key] = answer
         project = Project(**info)
+        #print report
+        yes, no = 'y', 'n'
+        yes = input('Do you want to continue? [{}/{}]'.format(yes, no)) == yes
+        if not yes:
+            print('Aborted.')
+            return
+        if os.path.exists(project.root):
+            path = project.root + str(time())
+            print('The {} folder already exists. It will be renamed to {} in order to the creation of the {} project at {}'.format(
+                project.root,
+                path,
+                project.name,
+                project.path,
+            ))
+            shutil.move(project.root, path)
+            print('Moved {} to {}.'.format(project.root, path))
         project.generate()
 
 def test():
     print('''
         Welcome to the midwife tool!!!
-        \n\n
-        You will be asked some question in order to automaticly create it for you.\n\n
+        \n
+        You will be asked some question in order to automaticly create it for you.\n
         So let\'s get started...
-        \n\n
+        \n
     ''')
     info = {
         'path': '~',
@@ -118,7 +135,7 @@ def test():
     if os.path.exists(root):
         shutil.rmtree(root)
         print('Removed the {} directory.'.format(root))
-    project = Project(**info)
+    project = midwife.Project(**info)
     project.generate()
     
     ############################################
@@ -130,4 +147,4 @@ def test():
     ############################################
 
 if __name__ == "__main__":
-    test()
+    main()

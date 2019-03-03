@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
 import json
 import shutil
-import subprocess
+import pkg_resources
 
 class MidwifeException(Exception):
     
@@ -16,11 +15,14 @@ class MidwifeException(Exception):
 
 class Project(object):
     
-    params_filename = os.path.join(sys.prefix, 'templates', 'params.json')
+    #prefix = os.path.join(os.path.expanduser('~'), '.midware')
+    prefix = pkg_resources.resource_filename('midwife', 'templates')
+    params_filename = os.path.join(prefix, 'params.json')
     
     def __init__(self, **info):
         self.path = os.path.abspath(info['path'])
         self.name = info['name']
+        self.root = os.path.join(self.path, self.name)
         self.authors = info['authors']
         self.requirements = info['requirements']
         self._load()
@@ -37,6 +39,9 @@ class Project(object):
                 self.name,
             ])
         }
+        
+    def __str__(self):
+        return ''
         
     def generate(self):
         self._makedirs()
@@ -109,8 +114,8 @@ class Project(object):
     def _load(self):
         replaces = {
             '{name}': self.name,
-            '{root}': os.path.join(self.path, self.name),
-            '{path}': os.path.join(sys.prefix),
+            '{root}': self.root,
+            '{prefix}': Project.prefix,
         }
         with open(Project.params_filename, 'r') as f:    
             self.params = f.read()

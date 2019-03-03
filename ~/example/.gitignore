@@ -115,6 +115,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+
 # Data Science
-/data
-/annotations
+annotations/
+models/
+data/

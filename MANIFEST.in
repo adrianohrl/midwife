@@ -1,0 +1,2 @@
+recursive-include midwife/templates/ *.template *.json
+recursive-exclude midwife/templates/.ipynb_checkpoints/ *
