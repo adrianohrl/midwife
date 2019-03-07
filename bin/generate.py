@@ -3,6 +3,7 @@
 
 #from argparse import ArgumentParser
 import os
+import git
 import shutil
 import json
 import midwife
@@ -57,7 +58,15 @@ class Field(object):
                     if answer is None:
                         answers.pop()
                         return self.key, answers
-                    answers[i][key] = answer            
+                    answers[i][key] = answer    
+                    
+def git_init(root, **info):
+    author = git.Actor(info['authors'][0]['name'], info['authors'][0]['email'])
+    repo = git.Repo.init(root)
+    repo.git.add(A = True)
+    commit = repo.index.commit('Created the {} project with the {} tool.'.format(info['name'], 'midwife'), author = author, committer = author)
+    origin = repo.create_remote(name = 'origin', url = info['url'])
+    repo.git.push('origin', 'master', set_upstream = True)
 
 def main():
     print('\t{}\n\tv{}\n\tby {}\n\t{}\n'.format(
@@ -97,6 +106,11 @@ def main():
             shutil.move(project.root, path)
             print('Moved {} to {}.'.format(project.root, path))
         project.generate()
+        yes = input('Do you want to initialize git in this project? [{}/{}]'.format(yes, no)) == yes
+        if not yes:
+            print('Aborted.')
+            return
+        git_init(project.root, **info)
 
 def test():
     print('''
@@ -121,6 +135,7 @@ def test():
         ],
         'description': 'This is an example.',
         'license': 'BSD',
+        'url': 'git@gitlab.com:adrianohrl/example.git',
         'keywords': [
             'project',
             'generator',
@@ -137,6 +152,7 @@ def test():
         print('Removed the {} directory.'.format(root))
     project = midwife.Project(**info)
     project.generate()
+    git_init(root, **info)
     
     ############################################
     ###         requirements.txt             ###
@@ -147,4 +163,4 @@ def test():
     ############################################
 
 if __name__ == "__main__":
-    main()
+    test()
