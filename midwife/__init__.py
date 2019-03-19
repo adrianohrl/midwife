@@ -1,4 +1,6 @@
 from .midwife import Project
 
-version_info = (0, 2, 4, '')
+__author__ = 'Adriano Henrique Rossette Leite'
+version_info = (0, 2, 5, '')
 __version__ = '.'.join(map(str, version_info[:3])) + ''.join(version_info[3:])
+__license__ = 'BSD'
