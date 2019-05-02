@@ -7,7 +7,7 @@ import git
 import shutil
 import json
 import midwife
-import pkg_resources
+import pkg_resources as pr
 
 #parser = argparse.ArgumentParser()
 #parser.parse_args()
@@ -58,60 +58,75 @@ class Field(object):
                     if answer is None:
                         answers.pop()
                         return self.key, answers
-                    answers[i][key] = answer    
-                    
-def git_init(root, **info):
-    author = git.Actor(info['authors'][0]['name'], info['authors'][0]['email'])
-    repo = git.Repo.init(root)
-    repo.git.add(A = True)
-    commit = repo.index.commit('Created the {} project with the {} tool.'.format(info['name'], 'midwife'), author = author, committer = author)
-    origin = repo.create_remote(name = 'origin', url = info['url'])
-    repo.git.push('origin', 'master', set_upstream = True)
+                    answers[i][key] = answer
 
-def main():
-    print('\t{}\n\tv{}\n\tby {}\n\t{}\n'.format(
-        'midwife', 
-        midwife.__version__,
-        'Adriano Henrique Rossette Leite', 
-        'A tool for automaticly generating data science projects for python.'
-    ))
-    language = 'en' # pode ser um parametro de execucao 
-    #path = '~' # pode ser um parametro de execucao
-    #prefix = os.path.join(os.path.expanduser('~'), '.midware')
-    prefix = pkg_resources.resource_filename('midwife', 'templates')
-    form_filename = os.path.join(prefix, 'form.{}.json'.format(language))
-    with open(form_filename, 'r') as f:    
-        form = json.loads(f.read())
-        info = {}
-        fields = [Field(**field) for field in form['fields']]
-        print(form['menu'])
-        for field in fields:
-            key, answer = field.ask()
-            info[key] = answer
-        project = Project(**info)
-        #print report
+class Form(object):
+    def __init__(self, path, language = 'en'):
+        self.path = path
+        self.language = language
+        self.form_filename = '../midwife/templates/form.{}.json'.format(language)
+        self.fields = []
+        with open(self.form_filename, 'r') as f:    
+            self.form = json.loads(f.read())
+            self.fields = [Field(**field) for field in self.form['fields']]
+        self.info_filename = os.path.join(path, '.midwife_form_info.json')
+        self.info = {}
+        self.project = None
+        
+    def ask(self):
+        print(self.form['menu'])
+        self.info = {}
+        if os.path.exists(self.info_filename):
+            with open(self.info_filename, 'r') as f:
+                self.info = json.loads(f.read())
+                print('There is an existing filled form:')
+                print([print('\t{}: {}'.format(key, value)) for key, value in self.info.items()])
+                answer = input('Would like to continue from this point? [Y/n]')
+                if not answer.lower().startswith('y'):
+                    self.info = {}
+        for field in self.fields:
+            if field.key not in self.info:
+                key, answer = field.ask()
+                self.info[key] = answer
+                with open(self.info_filename, 'w') as f:
+                    json.dump(self.info, f)
+        return self.info
+        
+    def generate(self, project):
+        print('The following project structure will be generated:')
+        print(project)
         yes, no = 'y', 'n'
-        yes = input('Do you want to continue? [{}/{}]'.format(yes, no)) == yes
+        yes = input('Do you want to continue? [{}/{}]'.format(yes, no)).lower() == yes
         if not yes:
             print('Aborted.')
             return
-        if os.path.exists(project.root):
-            path = project.root + str(time())
-            print('The {} folder already exists. It will be renamed to {} in order to the creation of the {} project at {}'.format(
-                project.root,
-                path,
-                project.name,
-                project.path,
-            ))
-            shutil.move(project.root, path)
-            print('Moved {} to {}.'.format(project.root, path))
         project.generate()
+        os.remove(self.info_filename)
+    
+    def init(self, project):
+        yes, no = 'y', 'n'
         yes = input('Do you want to initialize git in this project? [{}/{}]'.format(yes, no)) == yes
         if not yes:
             print('Aborted.')
             return
-        git_init(project.root, **info)
-
+        project.init()
+                    
+def main():
+#     print('\t{}\n\tv{}\n\tby {}\n\t{}\n'.format(
+#         'midwife', 
+#         midwife.__version__,
+#         'Adriano Henrique Rossette Leite', 
+#         'A tool for automaticly generating data science projects for python.'
+#     ))
+    language = 'en' # pode ser um parametro de execucao 
+    path = os.path.expanduser('~/Projects/Python') # pode ser um parametro de execucao
+    #prefix = os.path.join(os.path.expanduser('~'), '.midware')
+    form = Form(path, language)
+    info = form.ask()
+    project = midwife.Project(**info)
+    form.generate(project)
+    form.init(project)
+    
 def test():
     print('''
         Welcome to the midwife tool!!!
@@ -163,4 +178,4 @@ def test():
     ############################################
 
 if __name__ == '__main__':
-    test()
+    main()#test()

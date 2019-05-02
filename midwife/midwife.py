@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
+import git
 import json
 import shutil
-import pkg_resources
+import pkg_resources as pr
+from datetime import datetime as dt
 
 class MidwifeException(Exception):
     
@@ -16,7 +18,7 @@ class MidwifeException(Exception):
 class Project(object):
     
     #prefix = os.path.join(os.path.expanduser('~'), '.midware')
-    prefix = pkg_resources.resource_filename('midwife', 'templates')
+    prefix = pr.resource_filename('midwife', 'templates')
     params_filename = os.path.join(prefix, 'params.json')
     
     def __init__(self, **info):
@@ -41,7 +43,7 @@ class Project(object):
         }
         
     def __str__(self):
-        return ''
+        return ''   
         
     def generate(self):
         self._makedirs()
@@ -53,8 +55,20 @@ class Project(object):
         self._create_makefile()
         self._create_others()
         print('Created the {} project structure at {}, successfully!'.format(self.name, self.path))
-  
+        
+    def init(self):
+        author = git.Actor(self.authors[0]['name'], self.authors[0]['email'])
+        repo = git.Repo.init(root)
+        repo.git.add(A = True)
+        commit = repo.index.commit('Created the {} project with the {} tool.'.format(info['name'], 'midwife'), author = author, committer = author)
+        origin = repo.create_remote(name = 'origin', url = self.metadata['url'])
+        repo.git.push('origin', 'master', set_upstream = True)
+
     def _makedirs(self):
+        if os.path.exists(self.root):
+            backup_dirname = '{}_bckp_{}'.format(self.name, dt.now().strftime('%Y%m%d%H%M%S'))
+            print('There is already an existing folder named {} at {}. It will be renamed to {}.'.format(self.name, self.path, backup_dirname))
+            os.rename(self.root, os.path.join(self.path, backup_dirname))
         root = os.path.join(self.path, self.name)
         if os.path.exists(root):
             raise MidwifeException('Unable to generate the {} project. The {} directory already exists.'.format(self.name, root))
