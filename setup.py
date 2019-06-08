@@ -5,7 +5,9 @@ import setuptools
 def read(filename):
     filename = os.path.join(os.path.dirname(__file__), filename)
     with open(filename, 'r') as f:
-        return f.read()
+        content = f.read()
+        f.close()
+        return content
 
 if __name__ == '__main__':
     name = 'midwife'
@@ -20,7 +22,7 @@ if __name__ == '__main__':
         name = name,
         version = midwife.__version__,
         author = 'Adriano Henrique Rossette Leite',
-        author_email = 'contact@adrianohrl.tech',
+        author_email = 'adrianohrl@gmail.com',
         description = 'This is a tool for automaticly generating data science projects based on its metadata.',
         license = 'BSD',
         keywords = 'Automated, Data Science, Project, Generation',

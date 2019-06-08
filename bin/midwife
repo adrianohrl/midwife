@@ -1,0 +1,47 @@
+#!/bin/bash
+
+VERSION="0.1.0"
+USAGE="Usage: midwife [--version | -v]
+               [--help | -h] 
+               <command> [<args>]
+
+  Author: Adriano Henrique Rossette Leite
+  Version: ${VERSION}
+  Description: This script ...
+
+  Options:
+
+    -h, --help
+         Shows this helper message for usage info.
+    -v, --version
+         Shows the midwife installed version.
+         
+  Commands:
+
+    generate 
+         This command asks for the metadata of the desired project in order
+         to midwife automaticly generate it for you.
+
+"    
+
+if [ ${#} = 0 ]; then
+	echo "${USAGE}"
+	exit
+fi
+
+while [ ${#} -gt 0 ]; do
+	case "${1}" in
+	    -h|--help)
+			echo "${USAGE}"
+		    ;;
+	    -v|--version)
+			echo "midwife-${VERSION}"
+		    ;;
+	    generate)
+			python -m midwife.generate "$@"
+		    ;;
+	    *)
+		    ;;
+	esac
+	shift
+done

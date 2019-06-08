@@ -62,14 +62,14 @@ class Field(object):
 
 class Form(object):
     def __init__(self, path, language = 'en'):
-        self.path = os.path.abspath(path)
+        self.path = path
         self.language = language
-        self.form_filename = os.path.abspath('templates/form.{}.json'.format(language))
+        self.form_filename = '../midwife/templates/form.{}.json'.format(language)
         self.fields = []
         with open(self.form_filename, 'r') as f:    
             self.form = json.loads(f.read())
             self.fields = [Field(**field) for field in self.form['fields']]
-        self.info_filename = os.path.join(self.path, '.midwife.json')
+        self.info_filename = os.path.join(path, '.midwife_form_info.json')
         self.info = {}
         self.project = None
         
@@ -178,5 +178,4 @@ def test():
     ############################################
 
 if __name__ == '__main__':
-    #main()
-    test()
+    main()#test()

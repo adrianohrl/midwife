@@ -58,9 +58,9 @@ class Project(object):
         
     def init(self):
         author = git.Actor(self.authors[0]['name'], self.authors[0]['email'])
-        repo = git.Repo.init(root)
+        repo = git.Repo.init(self.root)
         repo.git.add(A = True)
-        commit = repo.index.commit('Created the {} project with the {} tool.'.format(info['name'], 'midwife'), author = author, committer = author)
+        commit = repo.index.commit('Created the {} project with the {} tool.'.format(self.name, 'midwife'), author = author, committer = author)
         origin = repo.create_remote(name = 'origin', url = self.metadata['url'])
         repo.git.push('origin', 'master', set_upstream = True)
 
